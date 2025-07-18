@@ -24,7 +24,7 @@ public class Main {
 
             System.out.print("Enter your choice (1-6): ");
             int choice = sc.nextInt();
-            sc.nextLine(); // consume newline
+            sc.nextLine();
 
             switch ( choice ) {
                 case 1: {
@@ -56,20 +56,15 @@ public class Main {
 
                         Book selected = inventory.get(bookIndex);
                         System.out.print("Enter quantity to order (available: " + selected.getStock() + "): ");
-                        int qty = Integer.parseInt(sc.nextLine());
+                        int quantity = Integer.parseInt(sc.nextLine());
 
-                        if (qty <= 0 || qty > selected.getStock()) {
+                        if (quantity <= 0 || quantity > selected.getStock()) {
                             System.out.println("Invalid quantity.");
                         } else {
                             Book orderedBook = new Book(
-                                    selected.getAuthor(),
-                                    selected.getTitle(),
-                                    selected.getPrice(),
-                                    qty,
-                                    0 // ordered books don't have stock
-                            );
+                                    selected.getAuthor(), selected.getTitle(), selected.getPrice(), quantity, 0); // ordered books don't have stock
                             bookList.add(orderedBook);
-                            selected.setStock(selected.getStock() - qty);
+                            selected.setStock(selected.getStock() - quantity);
                             System.out.println("Book added to order.");
                         }
 
