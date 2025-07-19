@@ -63,7 +63,7 @@ public class Order {
     public String toString(){
         StringBuilder bookInformation = new StringBuilder();
         bookInformation.append("Order ID ").append(orderID).append("\n");
-        bookInformation.append("Ordered Book: \n");
+//        bookInformation.append("Ordered Book: \n");
         for (int i=0; i < bookList.size(); i++){
             bookInformation.append(bookList.get(i)).append("\n");
         }
@@ -74,21 +74,21 @@ public class Order {
 
 }
 
-class TestOrder {
-    public static void main(String[] args) {
-        // Tạo customer
-        Customer customer = new Customer("Nguyễn Văn A", "0123456789");
-
-        // Tạo danh sách book
-        ArrayListADT<Book> books = new ArrayListADT<>();
-        books.add(new Book("Java Basics", "hfhhfh", 150.0, 2,2));
-        books.add(new Book("Advanced Java", "hfhhf", 200.0, 5,1));
-
-        // Tạo order
-        Order order = new Order(customer, books);
-
-        // In thông tin order
-        System.out.println(order);
-    }
-}
+//class TestOrder {
+//    public static void main(String[] args) {
+//        // Tạo customer
+//        Customer customer = new Customer("Nguyễn Văn A", "0123456789");
+//
+//        // Tạo danh sách book
+//        ArrayListADT<Book> books = new ArrayListADT<>();
+//        books.add(new Book("Java Basics", "hfhhfh", 150.0, 2,2));
+//        books.add(new Book("Advanced Java", "hfhhf", 200.0, 5,1));
+//
+//        // Tạo order
+//        Order order = new Order(customer, books);
+//
+//        // In thông tin order
+//        System.out.println(order);
+//    }
+//}
 

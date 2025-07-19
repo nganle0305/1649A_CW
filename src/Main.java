@@ -15,7 +15,7 @@ public class Main {
 
         boolean running = true;
         do {
-            System.out.println("1. Place a New Order");
+            System.out.println("\n1. Place a New Order");
             System.out.println("2. Search for an Order");
             System.out.println("3. Sort Books in an Order");
             System.out.println("4. View Book Inventory");
@@ -26,7 +26,7 @@ public class Main {
             int choice = sc.nextInt();
             sc.nextLine();
 
-            switch ( choice ) {
+            switch (choice) {
                 case 1: {
                     System.out.println("\n--- Place New Order ---");
 
@@ -84,15 +84,14 @@ public class Main {
 
                     break;
                 }
-
-                case 2:
+                case 2: {
                     System.out.print("Enter Order ID to search: ");
                     int searchId = Integer.parseInt(sc.nextLine());
                     boolean found = false;
 
                     for (int i = 0; i < orders.size(); i++) {
                         if (orders.get(i).getOrderID() == searchId) {
-                            System.out.println("Order found:");
+                            System.out.println("\nOrder found:");
                             System.out.println(orders.get(i));
                             found = true;
                             break;
@@ -104,16 +103,47 @@ public class Main {
                     }
 
                     break;
+                }
+                case 3: {
+                    System.out.print("Enter Order ID to sort its books by price: ");
+                    int targetId = Integer.parseInt(sc.nextLine());
 
-                case 3:
+                    Order targetOrder = null;
+
+                    // Linear search to find order by ID
+                    for (int i = 0; i < orders.size(); i++) {
+                        if (orders.get(i).getOrderID() == targetId) {
+                            targetOrder = orders.get(i);
+                            break;
+                        }
+                    }
+                    if (targetOrder == null) {
+                        System.out.println("Order not found.");
+                        break;
+                    }
+
+                    ArrayListADT<Book> bookList = targetOrder.getBookList();
+
+                    if (bookList.isEmpty()) {
+                        System.out.println("This order has no books.");
+                        break;
+                    }
+
+                    // Sort books by price
+                    BubbleSort.sortByPrice(bookList);
+
+                    System.out.println("Books in Order ID " + targetId + " sorted by price:");
+                    for (int i = 0; i < bookList.size(); i++) {
+                        System.out.println(bookList.get(i));
+                    }
+
+                    break;
+                }
+                case 4: {
                     System.out.println();
 
                     break;
-                case 4:
-                    System.out.println();
-
-                    break;
-
+                }
                 case 5:
                     System.out.println();
 
@@ -126,6 +156,7 @@ public class Main {
                 default:
                     System.out.println("Invalid option. Please select a valid option (1-6).");
                     break;
+
             }
         } while (running);
     }
