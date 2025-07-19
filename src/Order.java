@@ -12,8 +12,6 @@ public class Order {
         this.orderID = autoIncrement++;
         this.customer = customer;
         this.bookList = bookList;
-
-
     }
 
     //method

@@ -14,6 +14,7 @@ public class Main {
         inventory.add(new Book("Jane Austen", "Pride and Prejudice", 14.50, 0, 7));
 
         boolean running = true;
+
         do {
             System.out.println("\n Online Bookstore main menu\n");
             System.out.println("1. Place a New Order");
