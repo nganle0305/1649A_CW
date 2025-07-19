@@ -22,12 +22,13 @@ public class Main {
             System.out.println("4. View All Orders in Queue");
             System.out.println("5. Exit");
 
-            System.out.print("Enter your choice (1-6): ");
-            int choice = sc.nextInt();
-            sc.nextLine();
+            System.out.print("Enter your choice (1-5): ");
+            String choice = sc.nextLine().trim();
+
 
             switch (choice) {
-                case 1: {
+
+                case "1": {
                     System.out.println("\n--- Place New Order ---");
 
                     System.out.print("\nEnter customer name: ");
@@ -39,39 +40,48 @@ public class Main {
                     ArrayListADT<Book> bookList = new ArrayListADT<>();
 
                     boolean adding = true;
-
+                    int input;
                     while (adding) {
+
                         System.out.println("\nAvailable books:");
                         for (int i = 0; i < inventory.size(); i++) {
                             System.out.println((i + 1) + ". " + inventory.get(i).toStockString());
                         }
-
                         System.out.print("Select book number (1 to " + inventory.size() + "): ");
-                        int bookIndex = Integer.parseInt(sc.nextLine()) - 1;
-
-                        if (bookIndex < 0 || bookIndex >= inventory.size()) {
-                            System.out.println("Invalid book number. Try again.");
-                            continue;
+                        String bookIndex = sc.nextLine().trim();
+                        try {
+                            input = Integer.parseInt(bookIndex);
+                            if (input < 0 || input >= inventory.size()) {
+                                System.out.println("Invalid book number. Try again.");
+                                continue;
+                            }
+                        } catch (NumberFormatException e) {
+                                System.out.println("Invalid book number. Try again.");
+                                continue;
                         }
 
-                        Book selected = inventory.get(bookIndex);
+                        Book selected = inventory.get(input);
                         System.out.print("Enter quantity to order (available: " + selected.getStock() + "): ");
-                        int quantity = Integer.parseInt(sc.nextLine());
+                        int quantity;
+                        String quantityInput = sc.nextLine().trim();
+                        try {
+                            quantity = Integer.parseInt(quantityInput);
+                            if (quantity <= 0 || quantity > selected.getStock()) {
+                                System.out.println("Invalid quantity.");
+                            } else {
+                                Book orderedBook = new Book(
+                                        selected.getAuthor(), selected.getTitle(), selected.getPrice(), quantity, 0); // ordered books don't have stock
+                                bookList.add(orderedBook);
+                                selected.setStock(selected.getStock() - quantity);
+                                System.out.println("Book added to order.");
+                            }
 
-                        if (quantity <= 0 || quantity > selected.getStock()) {
-                            System.out.println("Invalid quantity.");
-                        } else {
-                            Book orderedBook = new Book(
-                                    selected.getAuthor(), selected.getTitle(), selected.getPrice(), quantity, 0); // ordered books don't have stock
-                            bookList.add(orderedBook);
-                            selected.setStock(selected.getStock() - quantity);
-                            System.out.println("Book added to order.");
+                            System.out.print("Add another book? (y/n): ");
+                            adding = sc.nextLine().equalsIgnoreCase("y");
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid book number. Try again.");
                         }
-
-                        System.out.print("Add another book? (y/n): ");
-                        adding = sc.nextLine().equalsIgnoreCase("y");
                     }
-
                     if (bookList.isEmpty()) {
                         System.out.println("No books selected. Order not created.");
                         break;
@@ -84,9 +94,18 @@ public class Main {
 
                     break;
                 }
-                case 2: {
+                case "2": {
                     System.out.print("Enter Order ID: ");
-                    int searchId = Integer.parseInt(sc.nextLine());
+                    String inputId = sc.nextLine().trim();
+                    int searchId;
+
+                    try {
+                        searchId = Integer.parseInt(inputId);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid Order ID. Please enter a number.");
+                        break; // thoát khỏi case "2"
+                    }
+
                     Order targetOrder = null;
 
                     for (int i = 0; i < orders.size(); i++) {
@@ -95,18 +114,16 @@ public class Main {
                             break;
                         }
                     }
-
                     if (targetOrder == null) {
                         System.out.println("Order not found.");
                     } else {
                         System.out.println("\nOrder found:");
                         System.out.println(targetOrder);
                     }
-
                     break;
                 }
 
-                case 3: {
+                case "3": {
                     if (inventory.isEmpty()) {
                         System.out.println("Inventory is empty.");
                         break;
@@ -125,8 +142,18 @@ public class Main {
                         System.out.println("1. Price");
                         System.out.println("2. Title");
                         System.out.println("3. Author");
+
                         System.out.print("Enter your choice: ");
-                        int sortOption = Integer.parseInt(sc.nextLine());
+                        System.out.print("Enter your choice: ");
+                        String inputSort = sc.nextLine().trim();
+                        int sortOption;
+
+                        try {
+                            sortOption = Integer.parseInt(inputSort);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid sort option. Please enter a number.");
+                            break;
+                        }
 
                         switch (sortOption) {
                             case 1:
@@ -153,7 +180,7 @@ public class Main {
                     }
                     break;
                 }
-                case 4: {
+                case "4": {
                     System.out.println("\n--- All Orders in Queue ---");
 
                     if (orderQueue.isEmpty()) {
@@ -161,23 +188,22 @@ public class Main {
                         break;
                     }
 
-                    // Create a copy because use poll to print so will lost all info
+                    // Create a copy because use poll to print so will lose all info
                     LinkedQueueADT<Order> tempQueue = new LinkedQueueADT<>();
 
                     while (!orderQueue.isEmpty()) {
-                        Order current = orderQueue.poll();    // Lấy ra đầu hàng đợi
-                        System.out.println(current);          // In thông tin đơn hàng
-                        tempQueue.offer(current);             // Đưa lại vào hàng tạm
+                        Order current = orderQueue.poll();    // Get to the head of the queue
+                        System.out.println(current);          // Print order info
+                        tempQueue.offer(current);             // Put back in temporary queue
                     }
 
-                    // Khôi phục lại orderQueue gốc
+                    // Restore the original orderQueue
                     while (!tempQueue.isEmpty()) {
                         orderQueue.offer(tempQueue.poll());
                     }
-
                     break;
                 }
-                case 5:
+                case "5":
                     System.out.println("Exiting...");
                     running = false;
                     break;
