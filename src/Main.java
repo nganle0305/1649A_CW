@@ -103,8 +103,7 @@ public class Main {
                         searchId = Integer.parseInt(inputId);
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid Order ID. Please enter a number.");
-                        break; // escape case 2
-                    }
+                        break;                     }
 
                     Order targetOrder = null;
 
