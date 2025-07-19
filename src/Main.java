@@ -15,12 +15,12 @@ public class Main {
 
         boolean running = true;
         do {
-            System.out.println("\n1. Place a New Order");
-            System.out.println("2. Search for an Order");
-            System.out.println("3. Sort Books in an Order");
-            System.out.println("4. View Book Inventory");
-            System.out.println("5. View All Orders in Queue");
-            System.out.println("6. Exit");
+            System.out.println("\n Online Bookstore main menu\n");
+            System.out.println("1. Place a New Order");
+            System.out.println("2. Search for an Order"); //Search order
+            System.out.println("3. View Book Inventory"); //view and sort order
+            System.out.println("4. View All Orders in Queue");
+            System.out.println("5. Exit");
 
             System.out.print("Enter your choice (1-6): ");
             int choice = sc.nextInt();
@@ -85,76 +85,104 @@ public class Main {
                     break;
                 }
                 case 2: {
-                    System.out.print("Enter Order ID to search: ");
+                    System.out.print("Enter Order ID: ");
                     int searchId = Integer.parseInt(sc.nextLine());
-                    boolean found = false;
+                    Order targetOrder = null;
 
                     for (int i = 0; i < orders.size(); i++) {
                         if (orders.get(i).getOrderID() == searchId) {
-                            System.out.println("\nOrder found:");
-                            System.out.println(orders.get(i));
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found) {
-                        System.out.println("Order not found.");
-                    }
-
-                    break;
-                }
-                case 3: {
-                    System.out.print("Enter Order ID to sort its books by price: ");
-                    int targetId = Integer.parseInt(sc.nextLine());
-
-                    Order targetOrder = null;
-
-                    // Linear search to find order by ID
-                    for (int i = 0; i < orders.size(); i++) {
-                        if (orders.get(i).getOrderID() == targetId) {
                             targetOrder = orders.get(i);
                             break;
                         }
                     }
+
                     if (targetOrder == null) {
                         System.out.println("Order not found.");
-                        break;
-                    }
-
-                    ArrayListADT<Book> bookList = targetOrder.getBookList();
-
-                    if (bookList.isEmpty()) {
-                        System.out.println("This order has no books.");
-                        break;
-                    }
-
-                    // Sort books by price
-                    BubbleSort.sortByPrice(bookList);
-
-                    System.out.println("Books in Order ID " + targetId + " sorted by price:");
-                    for (int i = 0; i < bookList.size(); i++) {
-                        System.out.println(bookList.get(i));
+                    } else {
+                        System.out.println("\nOrder found:");
+                        System.out.println(targetOrder);
                     }
 
                     break;
                 }
+
+                case 3: {
+                    if (inventory.isEmpty()) {
+                        System.out.println("Inventory is empty.");
+                        break;
+                    }
+
+                    System.out.println("\nCurrent Book Inventory:");
+                    for (int i = 0; i < inventory.size(); i++) {
+                        System.out.println((i + 1) + ". " + inventory.get(i).toStockString());
+                    }
+
+                    System.out.print("\nDo you want to sort the inventory? (y/n): ");
+                    String sortChoice = sc.nextLine();
+
+                    if (sortChoice.equalsIgnoreCase("y")) {
+                        System.out.println("Sort inventory by:");
+                        System.out.println("1. Price");
+                        System.out.println("2. Title");
+                        System.out.println("3. Author");
+                        System.out.print("Enter your choice: ");
+                        int sortOption = Integer.parseInt(sc.nextLine());
+
+                        switch (sortOption) {
+                            case 1:
+                                BubbleSort.sortByPrice(inventory);
+                                System.out.println("\nInventory sorted by price:");
+                                break;
+                            case 2:
+                                BubbleSort.sortByTitle(inventory);
+                                System.out.println("\nInventory sorted by title:");
+                                break;
+                            case 3:
+                                BubbleSort.sortByAuthor(inventory);
+                                System.out.println("\nInventory sorted by author:");
+                                break;
+                            default:
+                                System.out.println("Invalid sorting option.");
+                                break;
+                        }
+
+                        // Display sorted inventory
+                        for (int i = 0; i < inventory.size(); i++) {
+                            System.out.println((i + 1) + ". " + inventory.get(i).toStockString());
+                        }
+                    }
+                    break;
+                }
                 case 4: {
-                    System.out.println();
+                    System.out.println("\n--- All Orders in Queue ---");
+
+                    if (orderQueue.isEmpty()) {
+                        System.out.println("The order queue is currently empty.");
+                        break;
+                    }
+
+                    // Create a copy because use poll to print so will lost all info
+                    LinkedQueueADT<Order> tempQueue = new LinkedQueueADT<>();
+
+                    while (!orderQueue.isEmpty()) {
+                        Order current = orderQueue.poll();    // Lấy ra đầu hàng đợi
+                        System.out.println(current);          // In thông tin đơn hàng
+                        tempQueue.offer(current);             // Đưa lại vào hàng tạm
+                    }
+
+                    // Khôi phục lại orderQueue gốc
+                    while (!tempQueue.isEmpty()) {
+                        orderQueue.offer(tempQueue.poll());
+                    }
 
                     break;
                 }
                 case 5:
-                    System.out.println();
-
-                    break;
-
-                case 6:
                     System.out.println("Exiting...");
                     running = false;
                     break;
                 default:
-                    System.out.println("Invalid option. Please select a valid option (1-6).");
+                    System.out.println("Invalid option. Please select a valid option (1-5).");
                     break;
 
             }

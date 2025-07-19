@@ -1,6 +1,3 @@
-
-
-
 public class Order {
 
     //attributes
@@ -11,7 +8,7 @@ public class Order {
     private ArrayListADT<Book> bookList;
 
     //constructors
-    public Order(Customer customer, ArrayListADT<Book> bookList){
+    public Order(Customer customer, ArrayListADT<Book> bookList) {
         this.orderID = autoIncrement++;
         this.customer = customer;
         this.bookList = bookList;
@@ -24,6 +21,7 @@ public class Order {
     public void setOrderID() {
         this.orderID = autoIncrement++;
     }
+
     public int getOrderID() {
         return this.orderID;
     }
@@ -39,6 +37,7 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+
     public String getStatus() {
         return this.status;
     }
@@ -46,13 +45,14 @@ public class Order {
     public ArrayListADT<Book> getBookList() {
         return bookList;
     }
+
     public void setBookList(ArrayListADT<Book> bookList) {
         this.bookList = bookList;
     }
 
-    public double totalPrice(){
+    public double totalPrice() {
         double total = 0.0;
-        for (int i=0; i < bookList.size(); i++ ) {
+        for (int i = 0; i < bookList.size(); i++) {
             Book bookIndex = bookList.get(i);
             total += bookIndex.getPrice() * bookIndex.getQuantity();
         }
@@ -60,18 +60,17 @@ public class Order {
     }
 
 
-    public String toString(){
+    public String toString() {
         StringBuilder bookInformation = new StringBuilder();
-        bookInformation.append("Order ID ").append(orderID).append("\n");
-//        bookInformation.append("Ordered Book: \n");
-        for (int i=0; i < bookList.size(); i++){
+        bookInformation.append("Order ID: ").append(orderID).append("\n");
+        bookInformation.append("Status: ").append(status).append("\n");
+        bookInformation.append(customer).append("\n"); // Show name and address
+        for (int i = 0; i < bookList.size(); i++) {
             bookInformation.append(bookList.get(i)).append("\n");
         }
-        bookInformation.append("Total: ").append(String.format("%.2f",totalPrice()));
+        bookInformation.append("Total: ").append(String.format("%.2f", totalPrice()));
         return bookInformation.toString();
     }
-
-
 }
 
 //class TestOrder {
