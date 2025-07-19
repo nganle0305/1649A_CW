@@ -1,6 +1,6 @@
 public class BubbleSort {
 
-    // Sắp xếp theo giá (price tăng dần)
+    // sortbyprice
     public static void sortByPrice(ArrayListADT<Book> books) {
         for (int i = 0; i < books.size() - 1; i++) {
             for (int j = 1; j < books.size() - i; j++) {
@@ -13,7 +13,7 @@ public class BubbleSort {
         }
     }
 
-    // Sắp xếp theo tựa sách (title tăng dần A-Z)
+    // sortbytitle (A-Z)
     public static void sortByTitle(ArrayListADT<Book> books) {
         for (int i = 0; i < books.size() - 1; i++) {
             for (int j = 1; j < books.size() - i; j++) {
@@ -26,7 +26,7 @@ public class BubbleSort {
         }
     }
 
-    // Sắp xếp theo tên tác giả (author tăng dần A-Z)
+    // sortbyAuthor (A-Z)
     public static void sortByAuthor(ArrayListADT<Book> books) {
         for (int i = 0; i < books.size() - 1; i++) {
             for (int j = 1; j < books.size() - i; j++) {
