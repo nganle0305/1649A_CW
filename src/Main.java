@@ -15,11 +15,11 @@ public class Main {
 
         boolean running = true;
         do {
-            System.out.println("1. Create and Place a New Order");
-            System.out.println("2. Search for an Order by ID");
+            System.out.println("1. Place a New Order");
+            System.out.println("2. Search for an Order");
             System.out.println("3. Sort Books in an Order");
             System.out.println("4. View Book Inventory");
-            System.out.println("5. View All Orders in Processing Queue");
+            System.out.println("5. View All Orders in Queue");
             System.out.println("6. Exit");
 
             System.out.print("Enter your choice (1-6): ");
@@ -28,7 +28,7 @@ public class Main {
 
             switch ( choice ) {
                 case 1: {
-                    System.out.println("\n--- Create and Place New Order ---");
+                    System.out.println("\n--- Place New Order ---");
 
                     System.out.print("\nEnter customer name: ");
                     String name = sc.nextLine();
@@ -78,15 +78,30 @@ public class Main {
                     }
 
                     Order order = new Order(customer, bookList);
-                    orders.add(order);           // ArrayListADT<Order>
-                    orderQueue.offer(order);     // LinkedQueueADT<Order>
-                    System.out.println("✅ Order placed successfully. Order ID: " + order.getOrderID());
+                    orders.add(order);
+                    orderQueue.offer(order);
+                    System.out.println("Order placed successfully. Order ID: " + order.getOrderID());
 
                     break;
                 }
 
                 case 2:
-                    System.out.println();
+                    System.out.print("Enter Order ID to search: ");
+                    int searchId = Integer.parseInt(sc.nextLine());
+                    boolean found = false;
+
+                    for (int i = 0; i < orders.size(); i++) {
+                        if (orders.get(i).getOrderID() == searchId) {
+                            System.out.println("Order found:");
+                            System.out.println(orders.get(i));
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        System.out.println("Order not found.");
+                    }
 
                     break;
 
@@ -98,12 +113,18 @@ public class Main {
                     System.out.println();
 
                     break;
+
                 case 5:
+                    System.out.println();
+
+                    break;
+
+                case 6:
                     System.out.println("Exiting...");
                     running = false;
                     break;
                 default:
-                    System.out.println("Invalid option. Please select a valid option (1-5).");
+                    System.out.println("Invalid option. Please select a valid option (1-6).");
                     break;
             }
         } while (running);
