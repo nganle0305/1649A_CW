@@ -25,7 +25,6 @@ public class Main {
             System.out.print("Enter your choice (1-5): ");
             String choice = sc.nextLine().trim();
 
-
             switch (choice) {
 
                 case "1": {
