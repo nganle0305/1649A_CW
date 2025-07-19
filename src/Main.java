@@ -82,6 +82,7 @@ public class Main {
                             System.out.println("Invalid book number. Try again.");
                         }
                     }
+
                     if (bookList.isEmpty()) {
                         System.out.println("No books selected. Order not created.");
                         break;
