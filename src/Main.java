@@ -12,8 +12,12 @@ public class Main {
 
         ArrayListADT<Book> inventory = new ArrayListADT<>();
         inventory.add(new Book("J.K. Rowling", "Harry Potter", 12.99, 0, 10));
-        inventory.add(new Book("George Orwell", "1984", 9.99, 0, 5));
-        inventory.add(new Book("Jane Austen", "Pride and Prejudice", 14.50, 0, 7));
+        inventory.add(new Book("George Orwell", "1984", 9.99, 0, 10));
+        inventory.add(new Book("Jane Austen", "Pride and Prejudice", 14.50, 0, 10));
+        inventory.add(new Book("Matt Haig", "The Midnight Library", 13.75, 0, 10));
+        inventory.add(new Book("R.J. Palacio", "Wonder", 10.50, 0, 5));
+        inventory.add(new Book("Rachel Ignotofsky", "Women in Science", 16.00, 0, 10));
+
 
         boolean running = true;
 
