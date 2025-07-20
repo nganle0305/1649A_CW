@@ -18,6 +18,7 @@ public class Main {
         do {
             System.out.println("\n Online Bookstore main menu\n");
             System.out.println("1. Place a New Order");
+            System.out.println("2. Delete an Order");
             System.out.println("2. Search for an Order"); //Search order
             System.out.println("3. View Book Inventory"); //view and sort order
             System.out.println("4. View All Orders in Queue");
@@ -95,7 +96,61 @@ public class Main {
 
                     break;
                 }
+
                 case "2": {
+                    if (orderQueue.isEmpty()) {
+                        System.out.println("The order queue is currently empty.");
+                        break;
+                    }
+
+                    System.out.print("Enter Order ID to cancel: ");
+                    String cancelIdStr = sc.nextLine().trim();
+                    int cancelId;
+
+                    try {
+                        cancelId = Integer.parseInt(cancelIdStr);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid Order ID.");
+                        break;
+                    }
+
+                    boolean found = false;
+                    LinkedQueueADT<Order> tempQueue = new LinkedQueueADT<>();
+
+                    while (!orderQueue.isEmpty()) {
+                        Order current = orderQueue.poll();
+
+                        if (current.getOrderID() == cancelId) {
+                            System.out.println("Order " + cancelId + " has been cancelled and removed from the queue.");
+                            found = true;
+
+                            // Optional: Restock books
+                            for (int i = 0; i < current.getBookList().size(); i++) {
+                                Book orderedBook = current.getBookList().get(i);
+                                for (int j = 0; j < inventory.size(); j++) {
+                                    if (inventory.get(j).getTitle().equals(orderedBook.getTitle())) {
+                                        inventory.get(j).setStock(inventory.get(j).getStock() + orderedBook.getQuantity());
+                                    }
+                                }
+                            }
+
+                        } else {
+                            tempQueue.offer(current);
+                        }
+                    }
+
+                    // Restore queue
+                    while (!tempQueue.isEmpty()) {
+                        orderQueue.offer(tempQueue.poll());
+                    }
+
+                    if (!found) {
+                        System.out.println("Order ID not found in the queue.");
+                    }
+                    break;
+                }
+
+                case "3": {
                     System.out.print("Enter Order ID: ");
                     String inputId = sc.nextLine().trim();
                     int searchId;
@@ -124,7 +179,7 @@ public class Main {
                     break;
                 }
 
-                case "3": {
+                case "4": {
                     if (inventory.isEmpty()) {
                         System.out.println("Inventory is empty.");
                         break;
@@ -181,7 +236,7 @@ public class Main {
                     }
                     break;
                 }
-                case "4": {
+                case "5": {
                     System.out.println("\n--- All Orders in Queue ---");
 
                     if (orderQueue.isEmpty()) {
@@ -204,7 +259,7 @@ public class Main {
                     }
                     break;
                 }
-                case "5":
+                case "6":
                     System.out.println("Exiting...");
                     running = false;
                     break;
