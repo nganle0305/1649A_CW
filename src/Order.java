@@ -3,9 +3,11 @@ public class Order {
     //attributes
     private int orderID;
     private String status = "Delivering";
+    private String historyStatus;
     private static int autoIncrement = 1;
     private Customer customer;
     private ArrayListADT<Book> bookList;
+
 
     //constructors
     public Order(Customer customer, ArrayListADT<Book> bookList) {
@@ -48,6 +50,14 @@ public class Order {
         this.bookList = bookList;
     }
 
+
+    public void setHistoryStatus(String historyStatus) {
+        this.historyStatus = historyStatus;
+    }
+    public String getHistoryStatus() {
+        return historyStatus;
+    }
+
     public double totalPrice() {
         double total = 0.0;
         for (int i = 0; i < bookList.size(); i++) {
@@ -70,7 +80,7 @@ public class Order {
         return bookInformation.toString();
     }
     public String toHistoryString() {
-        return "Order ID: " + orderID + " | Status: " + status;
+        return "Order ID: " + orderID + " | Status: " + historyStatus;
     }
 
 }

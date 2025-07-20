@@ -104,7 +104,7 @@ public class Main {
                     Order order = new Order(customer, bookList);
                     orders.add(order);
                     orderQueue.offer(order);
-                    order.setStatus("Added");//store order in history
+                    order.setHistoryStatus("Added");//store order in history
                     orderHistory.push(order);
 
                     System.out.println("Order placed successfully. Order ID: " + order.getOrderID());
@@ -122,7 +122,7 @@ public class Main {
                     LinkedQueueADT<Order> tempDisplayQueue = new LinkedQueueADT<>(); //create a new queue and copy info from old
                     while (!orderQueue.isEmpty()) {
                         Order current = orderQueue.poll();
-                        System.out.println((current.getOrderID() + ", "));
+                        System.out.println((current.getOrderID() + " "));
                         tempDisplayQueue.offer(current);
                     }
                     System.out.println();
@@ -148,7 +148,7 @@ public class Main {
 
                         if (current.getOrderID() == cancelId) {
 
-                            current.setStatus("Deleted");
+                            current.setHistoryStatus("Deleted");
                             orderHistory.push(current);
 
                             System.out.println("Order " + cancelId + " has been cancelled and removed from the queue.");
@@ -273,7 +273,6 @@ public class Main {
                         System.out.println("The order queue is currently empty.");
                         break;
                     }
-
                     // Create a copy because use poll to print so will lose all info
                     LinkedQueueADT<Order> tempQueue = new LinkedQueueADT<>();
 
@@ -283,13 +282,11 @@ public class Main {
                         tempQueue.offer(current);             // Put back in temporary queue
                     }
 
-                    // Restore the original orderQueue
-                    while (!tempQueue.isEmpty()) {
+                    while (!tempQueue.isEmpty()) { // Restore the original orderQueue
                         orderQueue.offer(tempQueue.poll());
                     }
                     break;
                 }
-
                 case "6": {
                     System.out.println("\n--- Order History ---");
                     if (orderHistory.isEmpty()) {
@@ -298,9 +295,7 @@ public class Main {
                         LinkedStackADT<Order> tempStack = new LinkedStackADT<>();
                         while (!orderHistory.isEmpty()) {
                             Order pastOrder = orderHistory.pop();
-
                             System.out.println(pastOrder.toHistoryString());
-
                             tempStack.push(pastOrder); // preserve order
                         }
                         while (!tempStack.isEmpty()) {
@@ -309,7 +304,6 @@ public class Main {
                     }
                     break;
                 }
-
                 case "7":
                     System.out.println("Exiting...");
                     running = false;
