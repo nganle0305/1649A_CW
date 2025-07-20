@@ -70,7 +70,7 @@ public class Main {
 
                         Book selected = inventory.get(input);
 
-                        int quantity = -1;
+                        int quantity;
                         while (true) {
                             System.out.print("Enter quantity to order (available: " + selected.getStock() + "): ");
                             String quantityInput = sc.nextLine().trim();
