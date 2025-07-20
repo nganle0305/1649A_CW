@@ -27,7 +27,7 @@ public class Main {
             System.out.println("6. View Order History");
             System.out.println("7. Exit");
 
-            System.out.print("Enter your choice (1-6): ");
+            System.out.print("Enter your choice (1-7): ");
             String choice = sc.nextLine().trim();
 
             switch (choice) {
@@ -279,7 +279,7 @@ public class Main {
                         while (!orderHistory.isEmpty()) {
                             Order pastOrder = orderHistory.pop();
 
-                            System.out.println("Order ID: " + pastOrder.getOrderID() + " [" + pastOrder.getStatus() + "]");
+                            System.out.println(pastOrder.toHistoryString());
 
                             tempStack.push(pastOrder); // preserve order
                         }
