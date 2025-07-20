@@ -7,6 +7,8 @@ public class Main {
 
         ArrayListADT<Order> orders = new ArrayListADT<>();
         LinkedQueueADT<Order> orderQueue = new LinkedQueueADT<>();
+        LinkedStackADT<Order> orderHistory = new LinkedStackADT<>();
+
 
         ArrayListADT<Book> inventory = new ArrayListADT<>();
         inventory.add(new Book("J.K. Rowling", "Harry Potter", 12.99, 0, 10));
@@ -19,12 +21,13 @@ public class Main {
             System.out.println("\n Online Bookstore main menu\n");
             System.out.println("1. Place a New Order");
             System.out.println("2. Delete an Order");
-            System.out.println("2. Search for an Order"); //Search order
-            System.out.println("3. View Book Inventory"); //view and sort order
-            System.out.println("4. View All Orders in Queue");
-            System.out.println("5. Exit");
+            System.out.println("3. Search for an Order");
+            System.out.println("4. View Book Inventory");
+            System.out.println("5. View Orders in Queue");
+            System.out.println("6. View Order History");
+            System.out.println("7. Exit");
 
-            System.out.print("Enter your choice (1-5): ");
+            System.out.print("Enter your choice (1-6): ");
             String choice = sc.nextLine().trim();
 
             switch (choice) {
@@ -92,6 +95,9 @@ public class Main {
                     Order order = new Order(customer, bookList);
                     orders.add(order);
                     orderQueue.offer(order);
+                    order.setStatus("Added");//store order in history
+                    orderHistory.push(order);
+
                     System.out.println("Order placed successfully. Order ID: " + order.getOrderID());
 
                     break;
@@ -121,6 +127,10 @@ public class Main {
                         Order current = orderQueue.poll();
 
                         if (current.getOrderID() == cancelId) {
+
+                            current.setStatus("Deleted");
+                            orderHistory.push(current);
+
                             System.out.println("Order " + cancelId + " has been cancelled and removed from the queue.");
                             found = true;
 
@@ -200,7 +210,7 @@ public class Main {
                         System.out.println("3. Author");
 
                         System.out.print("Enter your choice: ");
-                        System.out.print("Enter your choice: ");
+
                         String inputSort = sc.nextLine().trim();
                         int sortOption;
 
@@ -259,12 +269,33 @@ public class Main {
                     }
                     break;
                 }
-                case "6":
+
+                case "6": {
+                    System.out.println("\n--- Order History ---");
+                    if (orderHistory.isEmpty()) {
+                        System.out.println("No order history available.");
+                    } else {
+                        LinkedStackADT<Order> tempStack = new LinkedStackADT<>();
+                        while (!orderHistory.isEmpty()) {
+                            Order pastOrder = orderHistory.pop();
+
+                            System.out.println("Order ID: " + pastOrder.getOrderID() + " [" + pastOrder.getStatus() + "]");
+
+                            tempStack.push(pastOrder); // preserve order
+                        }
+                        while (!tempStack.isEmpty()) {
+                            orderHistory.push(tempStack.pop());
+                        }
+                    }
+                    break;
+                }
+
+                case "7":
                     System.out.println("Exiting...");
                     running = false;
                     break;
                 default:
-                    System.out.println("Invalid option. Please select a valid option (1-5).");
+                    System.out.println("Invalid option. Please select a valid option (1-7).");
                     break;
             }
         } while (running);

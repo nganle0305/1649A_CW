@@ -69,23 +69,9 @@ public class Order {
         bookInformation.append("Total: ").append(String.format("%.2f", totalPrice()));
         return bookInformation.toString();
     }
-}
+    public String toHistoryString() {
+        return "Order ID: " + orderID + " | Status: " + status;
+    }
 
-//class TestOrder {
-//    public static void main(String[] args) {
-//        // Tạo customer
-//        Customer customer = new Customer("Nguyễn Văn A", "0123456789");
-//
-//        // Tạo danh sách book
-//        ArrayListADT<Book> books = new ArrayListADT<>();
-//        books.add(new Book("Java Basics", "hfhhfh", 150.0, 2,2));
-//        books.add(new Book("Advanced Java", "hfhhf", 200.0, 5,1));
-//
-//        // Tạo order
-//        Order order = new Order(customer, books);
-//
-//        // In thông tin order
-//        System.out.println(order);
-//    }
-//}
+}
 
