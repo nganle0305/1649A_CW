@@ -28,7 +28,7 @@ public class Main {
             System.out.println("3. Search for an Order");
             System.out.println("4. View Book Inventory");
             System.out.println("5. View Orders in Queue");
-            System.out.println("6. View Order History");
+            System.out.println("6. View Order History"); //history add or delete
             System.out.println("7. Exit");
 
             System.out.print("Enter your choice (1-7): ");
@@ -69,26 +69,31 @@ public class Main {
                         }
 
                         Book selected = inventory.get(input);
-                        System.out.print("Enter quantity to order (available: " + selected.getStock() + "): ");
-                        int quantity;
-                        String quantityInput = sc.nextLine().trim();
-                        try {
-                            quantity = Integer.parseInt(quantityInput);
-                            if (quantity <= 0 || quantity > selected.getStock()) {
-                                System.out.println("Invalid quantity.");
-                            } else {
-                                Book orderedBook = new Book(
-                                        selected.getAuthor(), selected.getTitle(), selected.getPrice(), quantity, 0); // ordered books don't have stock
-                                bookList.add(orderedBook);
-                                selected.setStock(selected.getStock() - quantity);
-                                System.out.println("Book added to order.");
+
+                        int quantity = -1;
+                        while (true) {
+                            System.out.print("Enter quantity to order (available: " + selected.getStock() + "): ");
+                            String quantityInput = sc.nextLine().trim();
+                            try {
+                                quantity = Integer.parseInt(quantityInput);
+                                if (quantity <= 0 || quantity > selected.getStock()) {
+                                    System.out.println("Invalid quantity.");
+                                } else {
+                                    Book orderedBook = new Book(
+                                            selected.getAuthor(), selected.getTitle(), selected.getPrice(), quantity, 0);
+                                    bookList.add(orderedBook);
+                                    selected.setStock(selected.getStock() - quantity);
+                                    System.out.println("Book added to order");
+                                    break;
+                                }
+
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid book number. Try again.");
                             }
 
-                            System.out.print("Add another book? (y/n): ");
-                            adding = sc.nextLine().equalsIgnoreCase("y");
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid book number. Try again.");
                         }
+                        System.out.println("Add another book? (y/n): ");
+                        adding = sc.nextLine().trim().equalsIgnoreCase("y");
                     }
 
                     if (bookList.isEmpty()) {
@@ -113,10 +118,21 @@ public class Main {
                         break;
                     }
 
+                    System.out.println("\nCurrent Orders Queue");
+                    LinkedQueueADT<Order> tempDisplayQueue = new LinkedQueueADT<>(); //create a new queue and copy info from old
+                    while (!orderQueue.isEmpty()) {
+                        Order current = orderQueue.poll();
+                        System.out.println((current.getOrderID() + ", "));
+                        tempDisplayQueue.offer(current);
+                    }
+                    System.out.println();
+                    while (!tempDisplayQueue.isEmpty()) {
+                        orderQueue.offer(tempDisplayQueue.poll());
+                    }
+
                     System.out.print("Enter Order ID to cancel: ");
                     String cancelIdStr = sc.nextLine().trim();
                     int cancelId;
-
                     try {
                         cancelId = Integer.parseInt(cancelIdStr);
                     } catch (NumberFormatException e) {
