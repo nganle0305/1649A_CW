@@ -2,8 +2,7 @@ public class Order {
 
     //attributes
     private int orderID;
-    private String status = "Delivering";
-    private String historyStatus;
+    private String status = "Processing";
     private static int autoIncrement = 1;
     private Customer customer;
     private ArrayListADT<Book> bookList;
@@ -50,14 +49,6 @@ public class Order {
         this.bookList = bookList;
     }
 
-
-    public void setHistoryStatus(String historyStatus) {
-        this.historyStatus = historyStatus;
-    }
-    public String getHistoryStatus() {
-        return historyStatus;
-    }
-
     public double totalPrice() {
         double total = 0.0;
         for (int i = 0; i < bookList.size(); i++) {
@@ -68,19 +59,31 @@ public class Order {
     }
 
 
+    public void printHistoryDetails() {
+        System.out.println("Order ID: " + this.orderID);
+        System.out.println("Customer: " + this.customer.getName());
+        System.out.println("Address: " + this.customer.getAddress());
+        System.out.println("Status: " + this.status);
+        System.out.println("Books Ordered:");
+        for (int i = 0; i < this.getBookList().size(); i++) {
+            Book book = this.bookList.get(i);
+            System.out.println("- " + book.getTitle() + " x" + book.getQuantity() + " ($" + book.getPrice() + ")");
+        }
+        System.out.println("Total: $" + String.format("%.2f", totalPrice()));
+    }
+
+
     public String toString() {
         StringBuilder bookInformation = new StringBuilder();
         bookInformation.append("Order ID: ").append(orderID).append("\n");
-        bookInformation.append("Status: ").append(status).append("\n");
+        bookInformation.append("Status: ").append(status);
         bookInformation.append(customer).append("\n"); // Show name and address
         for (int i = 0; i < bookList.size(); i++) {
             bookInformation.append(bookList.get(i)).append("\n");
         }
         bookInformation.append("Total: ").append(String.format("%.2f", totalPrice()));
+        bookInformation.append("\n");
         return bookInformation.toString();
-    }
-    public String toHistoryString() {
-        return "Order ID: " + orderID + " | Status: " + historyStatus;
     }
 
 }

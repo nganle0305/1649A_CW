@@ -1,15 +1,16 @@
-import java.util.Scanner;
+import java.util.Scanner; // Import Scanner for user input
 
 public class Main {
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in); // Create Scanner object for reading user input
 
+        // Create data structures for orders, queue, and history stack
         ArrayListADT<Order> orders = new ArrayListADT<>();
         LinkedQueueADT<Order> orderQueue = new LinkedQueueADT<>();
         LinkedStackADT<Order> orderHistory = new LinkedStackADT<>();
 
-
+        // Create book inventory with 6 books
         ArrayListADT<Book> inventory = new ArrayListADT<>();
         inventory.add(new Book("J.K. Rowling", "Harry Potter", 12.99, 0, 10));
         inventory.add(new Book("George Orwell", "1984", 9.99, 0, 10));
@@ -22,9 +23,10 @@ public class Main {
         boolean running = true;
 
         do {
-            System.out.println("\n Online Bookstore main menu\n");
+            System.out.println("--------------------------------------");
+            System.out.println("Online Bookstore main menu\n");
             System.out.println("1. Place a New Order");
-            System.out.println("2. Delete an Order");
+            System.out.println("2. Process an Order");
             System.out.println("3. Search for an Order");
             System.out.println("4. View Book Inventory");
             System.out.println("5. View Orders in Queue");
@@ -32,23 +34,26 @@ public class Main {
             System.out.println("7. Exit");
 
             System.out.print("Enter your choice (1-7): ");
-            String choice = sc.nextLine().trim();
+            String choice = sc.nextLine().trim(); // remove blank in user input
 
             switch (choice) {
 
                 case "1": {
                     System.out.println("\n--- Place New Order ---");
 
+                    // Get customer information
                     System.out.print("\nEnter customer name: ");
                     String name = sc.nextLine();
                     System.out.print("Enter customer address: ");
                     String address = sc.nextLine();
 
                     Customer customer = new Customer(name, address);
-                    ArrayListADT<Book> bookList = new ArrayListADT<>();
+                    ArrayListADT<Book> bookList = new ArrayListADT<>(); // List of books in the order
 
                     boolean adding = true;
                     int input;
+
+                    // Loop to add multiple books to the order
                     while (adding) {
 
                         System.out.println("\nAvailable books:");
@@ -57,6 +62,8 @@ public class Main {
                         }
                         System.out.print("Select book number (1 to " + inventory.size() + "): ");
                         String bookIndex = sc.nextLine().trim();
+
+                        // Validate book index input
                         try {
                             input = Integer.parseInt(bookIndex);
                             if (input < 0 || input >= inventory.size()) {
@@ -68,17 +75,17 @@ public class Main {
                                 continue;
                         }
 
-                        Book selected = inventory.get(input);
+                        Book selected = inventory.get(input - 1); // index start with 0
 
                         int quantity;
-                        while (true) {
+                        while (true) { // Loop to validate quantity input
                             System.out.print("Enter quantity to order (available: " + selected.getStock() + "): ");
                             String quantityInput = sc.nextLine().trim();
                             try {
                                 quantity = Integer.parseInt(quantityInput);
                                 if (quantity <= 0 || quantity > selected.getStock()) {
                                     System.out.println("Invalid quantity.");
-                                } else {
+                                } else { // Create a book object with quantity for the order
                                     Book orderedBook = new Book(
                                             selected.getAuthor(), selected.getTitle(), selected.getPrice(), quantity, 0);
                                     bookList.add(orderedBook);
@@ -92,20 +99,20 @@ public class Main {
                             }
 
                         }
+                        // Ask if user wants to add more books
                         System.out.println("Add another book? (y/n): ");
                         adding = sc.nextLine().trim().equalsIgnoreCase("y");
                     }
-
+                    // If no book was added, cancel the order
                     if (bookList.isEmpty()) {
                         System.out.println("No books selected. Order not created.");
                         break;
                     }
-
+                    // Create order, add to lists, and push to history
                     Order order = new Order(customer, bookList);
                     orders.add(order);
                     orderQueue.offer(order);
-                    order.setHistoryStatus("Added");//store order in history
-                    orderHistory.push(order);
+                    order.setStatus("Processing");//store order in queue
 
                     System.out.println("Order placed successfully. Order ID: " + order.getOrderID());
 
@@ -118,65 +125,24 @@ public class Main {
                         break;
                     }
 
-                    System.out.println("\nCurrent Orders Queue");
-                    LinkedQueueADT<Order> tempDisplayQueue = new LinkedQueueADT<>(); //create a new queue and copy info from old
-                    while (!orderQueue.isEmpty()) {
-                        Order current = orderQueue.poll();
-                        System.out.println((current.getOrderID() + " "));
-                        tempDisplayQueue.offer(current);
-                    }
-                    System.out.println();
-                    while (!tempDisplayQueue.isEmpty()) {
-                        orderQueue.offer(tempDisplayQueue.poll());
-                    }
+                    Order processedOrder = orderQueue.peek();  // The first in queue (FIFO)
 
-                    System.out.print("Enter Order ID to cancel: ");
-                    String cancelIdStr = sc.nextLine().trim();
-                    int cancelId;
-                    try {
-                        cancelId = Integer.parseInt(cancelIdStr);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid Order ID.");
-                        break;
+                    System.out.println("\n--- Processing Order Preview ---");
+                    System.out.println(processedOrder);  // show info of order
+
+                    System.out.print("Do you want to process this order? (y/n): ");
+                    String confirm = sc.nextLine().trim();
+
+                    if (confirm.equalsIgnoreCase("y")) {
+                        processedOrder.setStatus("Delivering");       // Update status
+                        orderQueue.poll();                            // Remove in queue
+                        orderHistory.push(processedOrder);            // Save in history (Stack)
+
+                        System.out.println("Order " + processedOrder.getOrderID() + " is now Delivering.");
+                    } else {
+                        System.out.println("Order remains in the queue.");
                     }
 
-                    boolean found = false;
-                    LinkedQueueADT<Order> tempQueue = new LinkedQueueADT<>();
-
-                    while (!orderQueue.isEmpty()) {
-                        Order current = orderQueue.poll();
-
-                        if (current.getOrderID() == cancelId) {
-
-                            current.setHistoryStatus("Deleted");
-                            orderHistory.push(current);
-
-                            System.out.println("Order " + cancelId + " has been cancelled and removed from the queue.");
-                            found = true;
-
-                            // Optional: Restock books
-                            for (int i = 0; i < current.getBookList().size(); i++) {
-                                Book orderedBook = current.getBookList().get(i);
-                                for (int j = 0; j < inventory.size(); j++) {
-                                    if (inventory.get(j).getTitle().equals(orderedBook.getTitle())) {
-                                        inventory.get(j).setStock(inventory.get(j).getStock() + orderedBook.getQuantity());
-                                    }
-                                }
-                            }
-
-                        } else {
-                            tempQueue.offer(current);
-                        }
-                    }
-
-                    // Restore queue
-                    while (!tempQueue.isEmpty()) {
-                        orderQueue.offer(tempQueue.poll());
-                    }
-
-                    if (!found) {
-                        System.out.println("Order ID not found in the queue.");
-                    }
                     break;
                 }
 
@@ -194,6 +160,7 @@ public class Main {
 
                     Order targetOrder = null;
 
+                    // Linear search in orders list
                     for (int i = 0; i < orders.size(); i++) {
                         if (orders.get(i).getOrderID() == searchId) {
                             targetOrder = orders.get(i);
@@ -220,6 +187,7 @@ public class Main {
                         System.out.println((i + 1) + ". " + inventory.get(i).toStockString());
                     }
 
+                    // Ask user if they want to sort
                     System.out.print("\nDo you want to sort the inventory? (y/n): ");
                     String sortChoice = sc.nextLine();
 
@@ -241,6 +209,7 @@ public class Main {
                             break;
                         }
 
+                        // Sort using BubbleSort
                         switch (sortOption) {
                             case 1:
                                 BubbleSort.sortByPrice(inventory);
@@ -289,21 +258,33 @@ public class Main {
                 }
                 case "6": {
                     System.out.println("\n--- Order History ---");
-                    if (orderHistory.isEmpty()) {
-                        System.out.println("No order history available.");
-                    } else {
-                        LinkedStackADT<Order> tempStack = new LinkedStackADT<>();
-                        while (!orderHistory.isEmpty()) {
-                            Order pastOrder = orderHistory.pop();
-                            System.out.println(pastOrder.toHistoryString());
-                            tempStack.push(pastOrder); // preserve order
+
+                    LinkedStackADT<Order> tempStack = new LinkedStackADT<>();
+                    boolean foundDelivering = false;
+
+                    while (!orderHistory.isEmpty()) {
+                        Order pastOrder = orderHistory.pop();
+
+                        if (pastOrder.getStatus().equalsIgnoreCase("Delivering")) {
+                            pastOrder.printHistoryDetails();
+                            foundDelivering = true;
                         }
-                        while (!tempStack.isEmpty()) {
-                            orderHistory.push(tempStack.pop());
-                        }
+
+                        tempStack.push(pastOrder);
+                    }
+
+                    // Restore original orderHistory stack
+                    while (!tempStack.isEmpty()) {
+                        orderHistory.push(tempStack.pop());
+                    }
+
+                    // Print message only once if nothing found
+                    if (!foundDelivering) {
+                        System.out.println("No processed orders in history.");
                     }
                     break;
                 }
+
                 case "7":
                     System.out.println("Exiting...");
                     running = false;
