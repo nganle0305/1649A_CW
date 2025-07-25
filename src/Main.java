@@ -16,7 +16,7 @@ public class Main {
         inventory.add(new Book("George Orwell", "1984", 9.99, 0, 10));
         inventory.add(new Book("Jane Austen", "Pride and Prejudice", 14.50, 0, 10));
         inventory.add(new Book("Matt Haig", "The Midnight Library", 13.75, 0, 10));
-        inventory.add(new Book("R.J. Palacio", "Wonder", 10.50, 0, 5));
+        inventory.add(new Book("R.J. Palacio", "Wonder", 10.50, 0, 10));
         inventory.add(new Book("Rachel Ignotofsky", "Women in Science", 16.00, 0, 10));
 
 
@@ -40,7 +40,6 @@ public class Main {
 
                 case "1": {
                     System.out.println("\n--- Place New Order ---");
-
                     // Get customer information
                     System.out.print("\nEnter customer name: ");
                     String name = sc.nextLine();
@@ -66,7 +65,7 @@ public class Main {
                         // Validate book index input
                         try {
                             input = Integer.parseInt(bookIndex);
-                            if (input < 0 || input >= inventory.size()) {
+                            if (input <= 0 || input > inventory.size()) {
                                 System.out.println("Invalid book number. Try again.");
                                 continue;
                             }
@@ -95,7 +94,7 @@ public class Main {
                                 }
 
                             } catch (NumberFormatException e) {
-                                System.out.println("Invalid book number. Try again.");
+                                System.out.println("Invalid quantity number. Try again.");
                             }
 
                         }
@@ -147,32 +146,48 @@ public class Main {
                 }
 
                 case "3": {
-                    System.out.print("Enter Order ID: ");
-                    String inputId = sc.nextLine().trim();
-                    int searchId;
-
-                    try {
-                        searchId = Integer.parseInt(inputId);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid Order ID. Please enter a number.");
+                    if (orders.isEmpty()) {
+                        System.out.println("There are no orders to search.");
                         break;
                     }
 
-                    Order targetOrder = null;
-
-                    // Linear search in orders list
+                    // Show list of order ID
+                    System.out.println("Available Order IDs:");
                     for (int i = 0; i < orders.size(); i++) {
-                        if (orders.get(i).getOrderID() == searchId) {
-                            targetOrder = orders.get(i);
-                            break;
+                        System.out.println("- Order ID: " + orders.get(i).getOrderID());
+                    }
+                    while (true) {
+                        System.out.print("Enter Order ID: ");
+                        String inputId = sc.nextLine().trim();
+                        int searchId;
+
+                        try { // Try to parse Order ID
+                            searchId = Integer.parseInt(inputId);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid Order ID: '" + inputId + "' is not valid. Please try again.");
+                            continue; // Comeback to enter ID
+                        }
+
+                        // Linear search in orders list
+                        Order targetOrder = null;
+                        for (int i = 0; i < orders.size(); i++) {
+                            if (orders.get(i).getOrderID() == searchId) {
+                                targetOrder = orders.get(i);
+                                break;
+                            }
+                        }
+
+                        if (targetOrder == null) {
+                            //If it doesn't find order, get error and try again
+                            System.out.println("Order ID " + searchId + " not found. Please try again.");
+                        } else {
+                            // If find order, print and exit
+                            System.out.println("\nOrder found:");
+                            System.out.println(targetOrder);
+                            break; // exit case 3 loop when found
                         }
                     }
-                    if (targetOrder == null) {
-                        System.out.println("Order not found.");
-                    } else {
-                        System.out.println("\nOrder found:");
-                        System.out.println(targetOrder);
-                    }
+
                     break;
                 }
 
